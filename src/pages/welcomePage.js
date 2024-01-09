@@ -3,7 +3,7 @@ import store from "../store/store";
 import "../styles/pages/welcomePage/index.scss";
 
 const WelcomePage = () => {
-  const isLogined = useSelector((state) => state.register.name);
+  const isLogined = useSelector((state) => state.global.user_name);
 
   return (
     <div className="welcomePage_main">

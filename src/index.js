@@ -1,7 +1,6 @@
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Provider } from "react-redux";
-import store from "./store/store.js";
 import Layout from "./pages/layout";
 import WelcomePage from "./pages/welcomePage";
 import Register from "./pages/Register";
@@ -9,6 +8,7 @@ import AboutUs from "./pages/aboutUs";
 import ErrorPage from "./pages/404";
 //import "./styles/index.scss";
 import "./index.css";
+import store from "./store/store";
 
 export default function App() {
   return (
