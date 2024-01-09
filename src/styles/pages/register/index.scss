@@ -1,0 +1,32 @@
+@import "../../globals/color-globals.scss";
+
+.register_main {
+  width: 75%;
+  height: 80vh;
+  margin: auto;
+  &_block {
+    border: 1px solid black;
+    width: 25%;
+    height: 75%;
+    margin: auto;
+    margin-top: 48px;
+    border: 1px solid;
+    form {
+      padding: 0px 48px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      span {
+        text-align: center;
+      }
+
+      input {
+        font-size: 16px;
+        padding: 12px;
+        border: none;
+        background-color: #fff;
+      }
+    }
+  }
+}
