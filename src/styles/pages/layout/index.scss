@@ -1,0 +1,63 @@
+@import "../../globals//color-globals.scss";
+
+.layout_main {
+  padding: 12px;
+  margin: 0 auto;
+  //border: 1px solid red;
+  width: 75%;
+  display: flex;
+  border-bottom: 1px solid black;
+  &_nav {
+    margin: 0 auto;
+    width: 75%;
+    //border: 1px solid blue;
+
+    &_list {
+      display: flex;
+      align-items: center;
+
+      &_option {
+        list-style: none;
+        text-decoration: none;
+        //border: 1px solid green;
+        height: 100%;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        a {
+          text-decoration: none;
+          color: $layout-navbar-link-primary-color;
+          transition: 0.2 ease;
+        }
+
+        a:hover {
+          color: $layout-navbar-link-primary-color-hover;
+        }
+      }
+    }
+  }
+
+  &_identification {
+    width: 25%;
+    //border: 1px solid red;
+    display: flex;
+
+    &_section {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      //border: 1px solid blue;
+
+      a {
+        text-decoration: none;
+        color: $layout-navbar-link-primary-color;
+        transition: 0.2 ease;
+      }
+
+      a:hover {
+        color: $layout-navbar-link-primary-color-hover;
+      }
+    }
+  }
+}
