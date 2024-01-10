@@ -121,7 +121,7 @@ const Layout = () => {
             </div>
             <div className="layout_main_identification_section">
               <PersonIcon />
-              <Link to="/register">Login</Link>
+              <Link to="/login">Login</Link>
             </div>
           </div>
         )}
