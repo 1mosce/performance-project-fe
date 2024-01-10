@@ -4,12 +4,15 @@ import { useNavigate } from "react-router-dom";
 import "../styles/pages/register/index.scss";
 import { Button, CircularProgress, TextField, Snackbar } from "@mui/material";
 import { setUserData } from "../store/features/globalFeatures/globalSlice";
-import { checkUsernameAvailability } from "../constants/functions";
-import { ERR_USR_EXISTS } from "../constants/constants";
+import { userLoginLogic } from "../constants/functions";
+import {
+  ERR_PASSWORD_DOES_NOT_MATCH_ON_LOGIN,
+  ERR_EMAIL_NOT_EXISTS_ON_LOGIN,
+} from "../constants/constants";
 import { useState } from "react";
 import Backdrop from "@mui/material/Backdrop";
 
-const Register = () => {
+const LoginPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -31,29 +34,38 @@ const Register = () => {
 
     dispatch(setSpinnerLoading(true));
 
-    const data = {
+    let data = {
       userActionPerformed: "login",
       email: e.target.email.value,
-      user_name: e.target.user_name.value,
       password: e.target.password.value,
-      name: e.target.name.value,
-      company_name: e.target.company_name.value,
     };
 
-    const check_result = checkUsernameAvailability(data);
+    let response = userLoginLogic(data);
 
-    if (check_result === ERR_USR_EXISTS) {
-      setErrorMessage(ERR_USR_EXISTS);
-      setFieldErrorNumber(2);
+    if (response === ERR_EMAIL_NOT_EXISTS_ON_LOGIN) {
+      setErrorMessage(response);
+      setFieldErrorNumber(1);
+      await delay(500);
       dispatch(setSpinnerLoading(false));
       return;
+    } else if (response === ERR_PASSWORD_DOES_NOT_MATCH_ON_LOGIN) {
+      setErrorMessage(response);
+      setFieldErrorNumber(2);
+      await delay(500);
+      dispatch(setSpinnerLoading(false));
+      return;
+    } else {
+      response = {
+        ...response,
+        userActionPerformed: "login",
+      };
+      dispatch(setUserData(response));
+      await delay(1500);
+      dispatch(setSpinnerLoading(false));
+      navigate("/");
     }
+
     await delay(500);
-
-    dispatch(setUserData(data));
-    dispatch(setSpinnerLoading(false));
-
-    navigate("/");
   }
 
   return (
@@ -73,7 +85,7 @@ const Register = () => {
               autoHideDuration={6000}
               message={errorMessage}
             />
-            <span>Register to our services today</span>
+            <span>Login to our services</span>
             <TextField
               id="outlined-basic"
               label="E-mail"
@@ -82,39 +94,17 @@ const Register = () => {
               required
               error={fieldNumberError === 1}
             />
-            <TextField
-              id="outlined-basic"
-              label="Username"
-              variant="outlined"
-              name="user_name"
-              error={fieldNumberError === 2}
-              required
-            />
+
             <TextField
               id="outlined-basic"
               label="Password"
               variant="outlined"
               type="password"
-              error={fieldNumberError === 3}
+              error={fieldNumberError === 2}
               name="password"
               required
             />
-            <TextField
-              id="outlined-basic"
-              label="Full name"
-              variant="outlined"
-              error={fieldNumberError === 4}
-              name="name"
-              required
-            />
-            <TextField
-              id="outlined-basic"
-              label="Company name"
-              variant="outlined"
-              name="company_name"
-              error={fieldNumberError === 5}
-              required
-            />
+
             <Button type="submit">Submit</Button>
           </form>
         </div>
@@ -123,4 +113,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default LoginPage;

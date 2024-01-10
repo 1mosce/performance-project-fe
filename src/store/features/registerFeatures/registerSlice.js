@@ -5,6 +5,7 @@ export const RegisterSlice = createSlice({
   name: "register",
   initialState: {
     name: "",
+    user_name: "",
     email: "",
     password: "",
     company_name: "",
@@ -13,6 +14,7 @@ export const RegisterSlice = createSlice({
   reducers: {
     saveRegisterData: (state, action) => {
       state.email = action.payload.email;
+      state.user_name = action.payload.user_name;
       state.password = action.payload.password;
       state.name = action.payload.name;
       state.company_name = action.payload.company_name;

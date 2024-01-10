@@ -23,7 +23,7 @@ export const globalSlice = createSlice({
     setUserData: (state, action) => {
       if (action.payload.userActionPerformed === "login") {
         state.isUserLoggedIn = true;
-        state.user_name = action.payload.name;
+        state.user_name = action.payload.user_name;
         state.company_name = action.payload.company_name;
       } else if (action.payload.userActionPerformed === "logout") {
         state.isUserLoggedIn = false;

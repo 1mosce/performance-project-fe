@@ -9,6 +9,7 @@ import ErrorPage from "./pages/404";
 //import "./styles/index.scss";
 import "./index.css";
 import store from "./store/store";
+import LoginPage from "./pages/Login";
 
 export default function App() {
   return (
@@ -18,6 +19,7 @@ export default function App() {
           <Route path="/" element={<Layout />}>
             <Route index element={<WelcomePage />} />
             <Route path="register" element={<Register />} />
+            <Route path="login" element={<LoginPage />} />
             <Route path="about-us" element={<AboutUs />} />
             <Route path="*" element={<ErrorPage />} />
           </Route>
