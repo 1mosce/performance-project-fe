@@ -1,13 +1,19 @@
 import { useDispatch, useSelector } from "react-redux";
+import "../styles/pages/register/index.scss";
+import { Button, CircularProgress, TextField, Snackbar } from "@mui/material";
+import {} from "../constants/constants";
+import { useState } from "react";
+import Backdrop from "@mui/material/Backdrop";
 import { setSpinnerLoading } from "../store/features/registerFeatures/registerSlice";
 import { useNavigate } from "react-router-dom";
 import "../styles/pages/register/index.scss";
-import { Button, CircularProgress, TextField, Snackbar } from "@mui/material";
-import { setUserData } from "../store/features/globalFeatures/globalSlice";
-import { checkUsernameAvailability } from "../constants/functions";
-import { ERR_USR_EXISTS } from "../constants/constants";
-import { useState } from "react";
-import Backdrop from "@mui/material/Backdrop";
+import { registerNewUserRequest } from "../functions/apiFunctions";
+import { API_PATH_REGISTER, API_ROUTE_DEV } from "../constants/constants";
+
+import {
+  classifyResponseMessageOnRegister,
+  classifyResponseTypeOnRegister,
+} from "../functions/functions";
 
 const Register = () => {
   const dispatch = useDispatch();
@@ -16,7 +22,7 @@ const Register = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [fieldNumberError, setFieldErrorNumber] = useState();
 
-  const isSpinnerLoading = useSelector(
+  let isSpinnerLoading = useSelector(
     (state) => state.register.isSpinnerLoading
   );
 
@@ -31,29 +37,36 @@ const Register = () => {
 
     dispatch(setSpinnerLoading(true));
 
-    const data = {
-      userActionPerformed: "login",
+    let connectionString = API_ROUTE_DEV + API_PATH_REGISTER;
+
+    let data = {
       email: e.target.email.value,
-      user_name: e.target.user_name.value,
-      password: e.target.password.value,
+      username: e.target.username.value,
       name: e.target.name.value,
-      company_name: e.target.company_name.value,
+      password: e.target.password.value,
+      confirmPassword: e.target.password.value,
     };
 
-    const check_result = checkUsernameAvailability(data);
+    const response = await registerNewUserRequest(connectionString, data);
 
-    if (check_result === ERR_USR_EXISTS) {
-      setErrorMessage(ERR_USR_EXISTS);
-      setFieldErrorNumber(2);
+    const scenario = classifyResponseTypeOnRegister(response);
+
+    //ERROR HANDLING
+
+    if (scenario > 0) {
+      setErrorMessage(classifyResponseMessageOnRegister(scenario));
+      await delay(500);
+      setFieldErrorNumber(scenario);
       dispatch(setSpinnerLoading(false));
       return;
     }
-    await delay(500);
-
-    dispatch(setUserData(data));
-    dispatch(setSpinnerLoading(false));
-
-    navigate("/");
+    //SUCCESS HANDLING
+    else {
+      setErrorMessage(classifyResponseMessageOnRegister(scenario));
+      await delay(500);
+      dispatch(setSpinnerLoading(false));
+      navigate("/login");
+    }
   }
 
   return (
@@ -69,7 +82,7 @@ const Register = () => {
         <div className="register_main_block">
           <form onSubmit={handleSubmit}>
             <Snackbar
-              open={errorMessage != ""}
+              open={errorMessage !== ""}
               autoHideDuration={6000}
               message={errorMessage}
             />
@@ -84,18 +97,10 @@ const Register = () => {
             />
             <TextField
               id="outlined-basic"
-              label="Username"
-              variant="outlined"
-              name="user_name"
-              error={fieldNumberError === 2}
-              required
-            />
-            <TextField
-              id="outlined-basic"
               label="Password"
               variant="outlined"
               type="password"
-              error={fieldNumberError === 3}
+              error={fieldNumberError === 2}
               name="password"
               required
             />
@@ -103,16 +108,16 @@ const Register = () => {
               id="outlined-basic"
               label="Full name"
               variant="outlined"
-              error={fieldNumberError === 4}
+              error={fieldNumberError === 3}
               name="name"
               required
             />
             <TextField
               id="outlined-basic"
-              label="Company name"
+              label="User name"
               variant="outlined"
-              name="company_name"
-              error={fieldNumberError === 5}
+              error={fieldNumberError === 4}
+              name="username"
               required
             />
             <Button type="submit">Submit</Button>

@@ -1,16 +1,21 @@
 import { useDispatch, useSelector } from "react-redux";
 import { setSpinnerLoading } from "../store/features/registerFeatures/registerSlice";
-import { useNavigate } from "react-router-dom";
 import "../styles/pages/register/index.scss";
 import { Button, CircularProgress, TextField, Snackbar } from "@mui/material";
-import { setUserData } from "../store/features/globalFeatures/globalSlice";
-import { userLoginLogic } from "../constants/functions";
-import {
-  ERR_PASSWORD_DOES_NOT_MATCH_ON_LOGIN,
-  ERR_EMAIL_NOT_EXISTS_ON_LOGIN,
-} from "../constants/constants";
 import { useState } from "react";
 import Backdrop from "@mui/material/Backdrop";
+import {
+  API_PATH_LOGIN,
+  API_ROUTE_DEV,
+  LOGIN_SUCCESS,
+} from "../constants/constants";
+import { signInRequest } from "../functions/apiFunctions";
+import {
+  classifyResponseMessageOnLogin,
+  classifyResponseTypeOnLogin,
+} from "../functions/functions";
+import { hybernateUserInformation } from "../store/features/signInFeatures/signInSlice";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
   const dispatch = useDispatch();
@@ -34,38 +39,62 @@ const LoginPage = () => {
 
     dispatch(setSpinnerLoading(true));
 
-    let data = {
-      userActionPerformed: "login",
+    let connectionString = API_ROUTE_DEV + API_PATH_LOGIN;
+    let payload = {
       email: e.target.email.value,
       password: e.target.password.value,
     };
 
-    let response = userLoginLogic(data);
+    let response = await signInRequest(connectionString, payload);
 
-    if (response === ERR_EMAIL_NOT_EXISTS_ON_LOGIN) {
-      setErrorMessage(response);
-      setFieldErrorNumber(1);
+    if (!response.data.success) {
+      let scenario = classifyResponseTypeOnLogin(response);
+      setErrorMessage(classifyResponseMessageOnLogin(scenario));
       await delay(500);
-      dispatch(setSpinnerLoading(false));
-      return;
-    } else if (response === ERR_PASSWORD_DOES_NOT_MATCH_ON_LOGIN) {
-      setErrorMessage(response);
-      setFieldErrorNumber(2);
-      await delay(500);
+      setFieldErrorNumber(scenario);
       dispatch(setSpinnerLoading(false));
       return;
     } else {
-      response = {
-        ...response,
-        userActionPerformed: "login",
-      };
-      dispatch(setUserData(response));
-      await delay(1500);
+      localStorage.setItem("token", response.data.accessToken);
+      dispatch(hybernateUserInformation(response.data));
+      setErrorMessage(LOGIN_SUCCESS);
+      await delay(500);
       dispatch(setSpinnerLoading(false));
       navigate("/");
     }
 
-    await delay(500);
+    // let data = {
+    //   userActionPerformed: "login",
+    //   email: e.target.email.value,
+    //   password: e.target.password.value,
+    // };
+
+    // let response = userLoginLogic(data);
+
+    // if (response === ERR_EMAIL_NOT_EXISTS_ON_LOGIN) {
+    //   setErrorMessage(response);
+    //   setFieldErrorNumber(1);
+    //   await delay(500);
+    //   dispatch(setSpinnerLoading(false));
+    //   return;
+    // } else if (response === ERR_PASSWORD_DOES_NOT_MATCH_ON_LOGIN) {
+    //   setErrorMessage(response);
+    //   setFieldErrorNumber(2);
+    //   await delay(500);
+    //   dispatch(setSpinnerLoading(false));
+    //   return;
+    // } else {
+    //   response = {
+    //     ...response,
+    //     userActionPerformed: "login",
+    //   };
+    //   dispatch(setUserData(response));
+    //   await delay(1500);
+    //   dispatch(setSpinnerLoading(false));
+    //   navigate("/");
+    // }
+
+    // await delay(500);
   }
 
   return (
