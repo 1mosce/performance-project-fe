@@ -1,4 +1,4 @@
-import { Outlet, Link } from "react-router-dom";
+import { Outlet, Link, useNavigate } from "react-router-dom";
 import "../styles/pages/layout/index.scss";
 import PersonIcon from "@mui/icons-material/Person";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -8,16 +8,19 @@ import {
   setSpinnerLoadingFalse,
   setSpinnerLoadingTrue,
   setUserData,
+  unsetUserData,
 } from "../store/features/globalFeatures/globalSlice";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
+import { Backdrop, CircularProgress } from "@mui/material";
 import { useState } from "react";
 
 const Layout = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const isSpinnerLoading = useSelector(
     (state) => state.global.isSpinnerLoading
@@ -36,15 +39,15 @@ const Layout = () => {
   async function handleLogout() {
     dispatch(setSpinnerLoadingTrue());
 
-    const data = {
-      userActionPerformed: "logout",
-    };
+    dispatch(unsetUserData());
 
-    dispatch(setUserData(data));
+    localStorage.removeItem("token");
 
-    delay(3000);
+    await delay(3000);
 
-    dispatch(setSpinnerLoadingFalse);
+    dispatch(setSpinnerLoadingFalse());
+
+    window.location.reload(true);
   }
 
   return (
@@ -82,6 +85,16 @@ const Layout = () => {
             </Button>
           </DialogActions>
         </Dialog>
+        {isSpinnerLoading ? (
+          <Backdrop
+            sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+            open={isSpinnerLoading}
+          >
+            <CircularProgress color="inherit" />
+          </Backdrop>
+        ) : (
+          <></>
+        )}
         <div className="layout_main_nav">
           <ul className="layout_main_nav_list">
             <li className="layout_main_nav_list_option">

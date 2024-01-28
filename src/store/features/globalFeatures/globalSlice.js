@@ -20,21 +20,27 @@ export const globalSlice = createSlice({
       state.isSpinnerLoading = false;
     },
 
-    setUserData: (state, action) => {
-      if (action.payload.userActionPerformed === "login") {
-        state.isUserLoggedIn = true;
-        state.user_name = action.payload.user_name;
-        state.company_name = action.payload.company_name;
-      } else if (action.payload.userActionPerformed === "logout") {
-        state.isUserLoggedIn = false;
-        state.user_name = "";
-        state.company_name = "";
-      }
+    setUserData: (state) => {
+      state.isUserLoggedIn = true;
+      state.user_name = "1mosce";
+      state.company_name = "test company";
+      state.user_role = "owner";
+    },
+
+    unsetUserData: (state) => {
+      state.isUserLoggedIn = false;
+      state.user_name = "";
+      state.company_name = "";
+      state.user_role = "";
     },
   },
 });
 
-export const { setSpinnerLoadingTrue, setSpinnerLoadingFalse, setUserData } =
-  globalSlice.actions;
+export const {
+  setSpinnerLoadingTrue,
+  setSpinnerLoadingFalse,
+  setUserData,
+  unsetUserData,
+} = globalSlice.actions;
 
 export default globalSlice.reducer;
