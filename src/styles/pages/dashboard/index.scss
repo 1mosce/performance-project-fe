@@ -1,0 +1,66 @@
+@import "../../globals//color-globals.scss";
+
+.dashboardLayout {
+  display: flex;
+  height: 60px;
+  border-bottom: 1px solid #000;
+
+  &-header {
+    padding-top: 10px;
+    display: flex;
+    align-items: center;
+
+    &_titleContainer {
+      width: 50%;
+
+      span {
+        margin-left: 13px;
+        font-size: 36px;
+        font-weight: 100;
+      }
+    }
+
+    &_closeButtonContainer {
+      width: 50%;
+      display: flex;
+      justify-content: flex-end;
+    }
+  }
+
+  &-menu {
+    width: 50%;
+    display: flex;
+    align-items: center;
+
+    svg {
+      position: absolute;
+      left: 39px;
+    }
+
+    span {
+      position: absolute;
+      font-weight: 100;
+      font-size: 36px;
+      left: 129px;
+    }
+  }
+
+  &-infoSection {
+    width: 50%;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+
+    span {
+      font-size: 24px;
+      font-weight: 100;
+    }
+
+    &_cmpLogo {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #d9d9d9;
+    }
+  }
+}

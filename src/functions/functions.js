@@ -8,6 +8,12 @@ import {
   ERR_NOT_IDENTIFIED,
   API_SUCCESS_REGISTER_MESSAGE,
   API_ERROR_LOGIN_INVALID_EMAIL_OR_PASSWORD,
+  TASK_COMPLETED_MESSAGE,
+  TASK_DELETED_MESSAGE,
+  TASK_IN_PROGRESS_MESSAGE,
+  ROLE_SFTWR,
+  ROLE_LEAD,
+  ROLE_QA,
 } from "../constants/constants";
 import { temp_userList } from "../constants/database";
 
@@ -82,5 +88,37 @@ export function classifyResponseMessageOnLogin(incomingData) {
   switch (incomingData) {
     case API_ERROR_LOGIN_INVALID_EMAIL_OR_PASSWORD:
       return 1;
+  }
+}
+
+export async function simulateDelay(milliseconds) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, milliseconds);
+  });
+}
+
+export function defineStatusContainerColor(status) {
+  switch (status) {
+    case TASK_COMPLETED_MESSAGE:
+      return "completed";
+    case TASK_IN_PROGRESS_MESSAGE:
+      return "inProgress";
+    case TASK_DELETED_MESSAGE:
+      return "deleted";
+    default:
+      return "";
+  }
+}
+
+export function definePersonRoleContainerColor(role) {
+  switch (role) {
+    case ROLE_SFTWR:
+      return "sftwr";
+    case ROLE_LEAD:
+      return "lead";
+    case ROLE_QA:
+      return "qa";
+    default:
+      return "";
   }
 }

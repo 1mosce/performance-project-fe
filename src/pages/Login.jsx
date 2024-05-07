@@ -13,6 +13,7 @@ import { signInRequest } from "../functions/apiFunctions";
 import {
   classifyResponseMessageOnLogin,
   classifyResponseTypeOnLogin,
+  simulateDelay,
 } from "../functions/functions";
 import { hybernateUserInformation } from "../store/features/signInFeatures/signInSlice";
 import { useNavigate } from "react-router-dom";
@@ -27,12 +28,6 @@ const LoginPage = () => {
   const isSpinnerLoading = useSelector(
     (state) => state.register.isSpinnerLoading
   );
-
-  function delay(milliseconds) {
-    return new Promise((resolve) => {
-      setTimeout(resolve, milliseconds);
-    });
-  }
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -50,7 +45,7 @@ const LoginPage = () => {
     if (!response.data.success) {
       let scenario = classifyResponseTypeOnLogin(response);
       setErrorMessage(classifyResponseMessageOnLogin(scenario));
-      await delay(500);
+      await simulateDelay(500);
       setFieldErrorNumber(scenario);
       dispatch(setSpinnerLoading(false));
       return;
@@ -58,7 +53,7 @@ const LoginPage = () => {
       localStorage.setItem("token", response.data.accessToken);
       dispatch(hybernateUserInformation(response.data));
       setErrorMessage(LOGIN_SUCCESS);
-      await delay(500);
+      await simulateDelay(500);
       dispatch(setSpinnerLoading(false));
       navigate("/");
     }
