@@ -12,7 +12,7 @@ const WelcomePage = () => {
 
   useEffect(() => {
     async function fetchToken() {
-      if (userToken != "" && userToken != null) {
+      if (userToken !== "" && userToken != null) {
         const compareResult = await compareAccessTokens(userToken);
         if (!compareResult) {
           localStorage.removeItem("token");

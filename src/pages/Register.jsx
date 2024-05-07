@@ -13,6 +13,7 @@ import { API_PATH_REGISTER, API_ROUTE_DEV } from "../constants/constants";
 import {
   classifyResponseMessageOnRegister,
   classifyResponseTypeOnRegister,
+  simulateDelay,
 } from "../functions/functions";
 
 const Register = () => {
@@ -25,12 +26,6 @@ const Register = () => {
   let isSpinnerLoading = useSelector(
     (state) => state.register.isSpinnerLoading
   );
-
-  function delay(milliseconds) {
-    return new Promise((resolve) => {
-      setTimeout(resolve, milliseconds);
-    });
-  }
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -55,7 +50,7 @@ const Register = () => {
 
     if (scenario > 0) {
       setErrorMessage(classifyResponseMessageOnRegister(scenario));
-      await delay(500);
+      await simulateDelay(500);
       setFieldErrorNumber(scenario);
       dispatch(setSpinnerLoading(false));
       return;
@@ -63,7 +58,7 @@ const Register = () => {
     //SUCCESS HANDLING
     else {
       setErrorMessage(classifyResponseMessageOnRegister(scenario));
-      await delay(500);
+      await simulateDelay(500);
       dispatch(setSpinnerLoading(false));
       navigate("/login");
     }

@@ -1,0 +1,30 @@
+@import "../globals/color-globals.scss";
+.block {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 320px;
+  height: 230px;
+  margin: 12px;
+  border-radius: 30px;
+  -webkit-box-shadow: 0px 4px 24px 0px rgba(66, 68, 90, 0.5);
+  -moz-box-shadow: 0px 4px 24px 0px rgba(66, 68, 90, 0.5);
+  box-shadow: 0px 4px 24px 0px rgba(66, 68, 90, 0.5);
+  padding-left: 14px;
+
+  &_info {
+    height: 25%;
+    display: flex;
+    align-items: center;
+    &_title {
+      padding-right: 14px;
+      font-size: 28px;
+      font-weight: 400;
+    }
+  }
+
+  &_data {
+    display: flex;
+    align-items: center;
+  }
+}

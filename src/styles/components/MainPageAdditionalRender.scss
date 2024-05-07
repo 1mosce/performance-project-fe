@@ -1,0 +1,48 @@
+@import "../globals/color-globals.scss";
+
+.taskStatus {
+  border-radius: 30px;
+  color: $color-white;
+  width: 157px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 12px;
+}
+
+.personRole {
+  border-radius: 30px;
+  color: $color-white;
+  width: 60px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 12px;
+  font-size: 12px;
+}
+
+.sftwr {
+  background: $color-blue1;
+}
+
+.lead {
+  background: $color-purple1;
+}
+
+.qa {
+  background: $color-red;
+}
+
+.completed {
+  background: $color-green1;
+}
+
+.inProgress {
+  background: $color-yellow;
+}
+
+.deleted {
+  background: $color-red;
+}

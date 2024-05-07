@@ -17,6 +17,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import { Backdrop, CircularProgress } from "@mui/material";
 import { useState } from "react";
+import { simulateDelay } from "../functions/functions";
 
 const Layout = () => {
   const dispatch = useDispatch();
@@ -30,12 +31,6 @@ const Layout = () => {
 
   const [dialogState, setDialogState] = useState(false);
 
-  function delay(milliseconds) {
-    return new Promise((resolve) => {
-      setTimeout(resolve, milliseconds);
-    });
-  }
-
   async function handleLogout() {
     dispatch(setSpinnerLoadingTrue());
 
@@ -43,7 +38,7 @@ const Layout = () => {
 
     localStorage.removeItem("token");
 
-    await delay(3000);
+    await simulateDelay(3000);
 
     dispatch(setSpinnerLoadingFalse());
 
