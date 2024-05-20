@@ -1,0 +1,39 @@
+@import "../../../globals/color-globals.scss";
+@import "../../../globals/font-global.scss";
+
+.dashboardMainPage {
+  &_welcomeText {
+    &_title {
+      text-align: center;
+      font-size: 32px;
+      font-weight: 300;
+    }
+
+    &_span {
+      text-align: center;
+      font-size: 32px;
+      font-weight: 100;
+    }
+  }
+
+  &_companyItemsShowcase {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+}
+
+.projectsGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  justify-content: space-between;
+
+  .projectLink {
+    flex: 1 1 calc(33% - 20px);
+    max-width: calc(33% - 20px);
+  }
+}

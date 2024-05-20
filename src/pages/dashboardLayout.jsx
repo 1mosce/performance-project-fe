@@ -16,28 +16,56 @@ import {
   Divider,
   ListItemIcon,
   ListItemText,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Button,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import LayersIcon from "@mui/icons-material/Layers";
 import { useEffect, useState } from "react";
-import { API_PATH_GET_PROJECTS_LIST } from "../constants/constants.js";
-import { setCompanyProjectsList } from "../store/features/companyFeatures/companySlice.js";
-import { useSelector, useDispatch, Provider } from "react-redux";
-import { Outlet } from "react-router-dom";
+
+import { useSelector, useDispatch } from "react-redux";
+import { Link, Outlet, useNavigate } from "react-router-dom";
+import {
+  setSpinnerLoadingFalse,
+  setSpinnerLoadingTrue,
+  unsetUserData,
+} from "../store/features/globalFeatures/globalSlice.js";
+import { simulateDelay } from "../functions/functions.js";
 
 function DashboardLayout() {
   const [drawerState, setDrawerState] = useState(false);
   const [companyProjectsList, setCompanyProjectsList] = useState([]);
+  const [companyInfo, setCompanyInfo] = useState({});
+  const [dialogState, setDialogState] = useState(false);
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const companyProjectsList_toSet = useSelector(
-    (state) => state.company.projectsList
+  const companyState = useSelector((state) => state.company);
+  const isSpinnerLoading = useSelector(
+    (state) => state.global.isSpinnerLoading
   );
 
   useEffect(() => {
-    setCompanyProjectsList(companyProjectsList_toSet);
-  }, [companyProjectsList_toSet]);
+    setCompanyProjectsList(companyState.projectsList);
+    setCompanyInfo(companyState.companyData);
+  }, [companyState]);
+
+  async function handleLogout() {
+    dispatch(setSpinnerLoadingTrue());
+
+    dispatch(unsetUserData());
+
+    localStorage.removeItem("token");
+
+    dispatch(setSpinnerLoadingFalse());
+
+    navigate("/");
+  }
 
   const DrawerMainList = (
     <List>
@@ -46,7 +74,9 @@ function DashboardLayout() {
           <ListItemIcon>
             <LayersIcon />
           </ListItemIcon>
-          <ListItemText primary="Projects" />
+          <Link style={{ textDecoration: "none" }} to="/dashboard/projects">
+            <ListItemText primary="Projects" />
+          </Link>
         </ListItemButton>
       </ListItem>
       <ListItem>
@@ -100,7 +130,9 @@ function DashboardLayout() {
     >
       <div className="dashboardLayout-header">
         <div className="dashboardLayout-header_titleContainer">
-          <span>StaffFlow</span>
+          <Link style={{ textDecoration: "none" }} to="/dashboard">
+            <span>StaffFlow</span>
+          </Link>
         </div>
         <div className="dashboardLayout-header_closeButtonContainer">
           <IconButton onClick={() => setDrawerState(false)}>
@@ -116,12 +148,19 @@ function DashboardLayout() {
       ) : (
         <List>
           {companyProjectsList?.map((content) => (
-            <ListItem key={content.id}>
+            <ListItem key={content.serializedId}>
               <ListItemButton>
                 <ListItemIcon>
                   <LayersIcon />
                 </ListItemIcon>
-                <ListItemText primary={content.project_name} />
+                <Link
+                  style={{ textDecoration: "none" }}
+                  to={`/dashboard/project/${content.serializedId}`}
+                >
+                  <ListItemText
+                    primary={content.name || content.project_name}
+                  />
+                </Link>
               </ListItemButton>
             </ListItem>
           ))}
@@ -132,6 +171,38 @@ function DashboardLayout() {
 
   return (
     <>
+      <Dialog
+        open={dialogState}
+        onClose={() => setDialogState(false)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Confirm logout?"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you wanna logout? You will need to re-enter your
+            credentials in order to access your profile again
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => {
+              setDialogState(false);
+            }}
+          >
+            Disagree
+          </Button>
+          <Button
+            onClick={() => {
+              handleLogout();
+              setDialogState(false);
+            }}
+            autoFocus
+          >
+            Agree
+          </Button>
+        </DialogActions>
+      </Dialog>
       <div className="dashboardLayout">
         <Drawer open={drawerState}>{DrawerContent}</Drawer>
         <div className="dashboardLayout-menu">
@@ -141,10 +212,12 @@ function DashboardLayout() {
           <span>StaffFlow</span>
         </div>
         <div className="dashboardLayout-infoSection">
-          <span>Company Name</span>
+          <span>{companyInfo?.name}</span>
           <div className="dashboardLayout-infoSection_cmpLogo" />
           <PersonIcon />
-          <LogoutIcon />
+          <IconButton onClick={() => setDialogState(true)}>
+            <LogoutIcon />
+          </IconButton>
         </div>
       </div>
       <Outlet />

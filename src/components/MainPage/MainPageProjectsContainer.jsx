@@ -7,7 +7,9 @@ function MainPageProjectsContainer({ project }) {
   return (
     <div className="block">
       <div className="block_info">
-        <p className="block_info_title">{project.project_name}</p>
+        <p className="block_info_title">
+          {project.name || project.project_name}
+        </p>
         {project.project_status === "active" ? (
           <div className="status_active" />
         ) : (
@@ -17,17 +19,15 @@ function MainPageProjectsContainer({ project }) {
 
       <div className="block_data">
         <CalendarTodayIcon />
-        <span>
-          {project.project_start_date} - {project.project_end_date}
-        </span>
+        <span>INDEV! DUE_DATE OF PROJECT</span>
       </div>
       <div className="block_data">
         <PersonIcon />
-        <span>{project.project_assigned_employees} Employees</span>
+        <span>INDEV! TOTAL EMPLOYEES ON PROJECT</span>
       </div>
       <div className="block_data">
         <RssFeedIcon />
-        <span>{project.project_updates_since_last_visit} Updates</span>
+        <span>INDEV! LAST UPDATES</span>
       </div>
     </div>
   );

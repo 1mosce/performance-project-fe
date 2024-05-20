@@ -7,17 +7,18 @@ import {
   TaskAssignedPersonRole,
   TaskStatusContainer,
 } from "./MainPageTasksAdditionalRender";
+import RenderProjectName from "../ProjectsPage/RenderProjectName";
 
 function MainPageTasksContainer({ task }) {
   return (
     <div className="block">
       <div className="block_info">
-        <p className="block_info_title">{task.task_name}</p>
+        <p className="block_info_title">{task.title}</p>
       </div>
 
       <div className="block_data">
         <AccountTreeIcon />
-        <span>{task.project_name}</span>
+        <RenderProjectName projectId={task.projectId} />
       </div>
       <div className="block_data">
         <LayersIcon />

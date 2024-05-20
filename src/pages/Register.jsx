@@ -7,7 +7,7 @@ import Backdrop from "@mui/material/Backdrop";
 import { setSpinnerLoading } from "../store/features/registerFeatures/registerSlice";
 import { useNavigate } from "react-router-dom";
 import "../styles/pages/register/index.scss";
-import { registerNewUserRequest } from "../functions/apiFunctions";
+import { performPostRequestToApi } from "../functions/apiFunctions";
 import { API_PATH_REGISTER, API_ROUTE_DEV } from "../constants/constants";
 
 import {
@@ -42,7 +42,7 @@ const Register = () => {
       confirmPassword: e.target.password.value,
     };
 
-    const response = await registerNewUserRequest(connectionString, data);
+    const response = await performPostRequestToApi(connectionString, data);
 
     const scenario = classifyResponseTypeOnRegister(response);
 

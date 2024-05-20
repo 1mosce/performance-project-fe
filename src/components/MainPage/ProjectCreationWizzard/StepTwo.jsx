@@ -247,12 +247,18 @@ function StepTwo() {
         </form>
       </div>
       <div className="ButtonsContainer">
-        <Link to="/dashboard/project-creation-wizzard">
+        <Link
+          style={{ textDecoration: "none" }}
+          to="/dashboard/project-creation-wizzard"
+        >
           <Button variant="text" className="ButtonsContainer_goBack">
             Go back
           </Button>
         </Link>
-        <Link to="/dashboard/project-creation-wizzard/step-three">
+        <Link
+          style={{ textDecoration: "none" }}
+          to="/dashboard/project-creation-wizzard/step-three"
+        >
           <Button
             variant="contained"
             className="ButtonsContainer_nextStep"

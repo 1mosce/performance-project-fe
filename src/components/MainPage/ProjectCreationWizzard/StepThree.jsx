@@ -119,12 +119,18 @@ function StepThree() {
         </form>
       </div>
       <div className="ButtonsContainer space-top">
-        <Link to="/dashboard/project-creation-wizzard/step-two">
+        <Link
+          to="/dashboard/project-creation-wizzard/step-two"
+          style={{ textDecoration: "none" }}
+        >
           <Button variant="text" className="ButtonsContainer_goBack">
             Go back
           </Button>
         </Link>
-        <Link to="/dashboard/project-creation-wizzard/summary">
+        <Link
+          style={{ textDecoration: "none" }}
+          to="/dashboard/project-creation-wizzard/summary"
+        >
           <Button
             variant="contained"
             className="ButtonsContainer_nextStep"

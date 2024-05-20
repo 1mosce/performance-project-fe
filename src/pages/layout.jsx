@@ -37,6 +37,7 @@ const Layout = () => {
     dispatch(unsetUserData());
 
     localStorage.removeItem("token");
+    localStorage.removeItem("company_data");
 
     await simulateDelay(3000);
 
@@ -97,6 +98,9 @@ const Layout = () => {
             </li>
             <li className="layout_main_nav_list_option">
               <Link to="/about-us">About us</Link>
+            </li>
+            <li className="layout_main_nav_list_option">
+              <Link to="/dashboard">Dashboard</Link>
             </li>
           </ul>
         </div>
