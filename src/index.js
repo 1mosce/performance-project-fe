@@ -19,6 +19,8 @@ import StepTwo from "./components/MainPage/ProjectCreationWizzard/StepTwo";
 import StepThree from "./components/MainPage/ProjectCreationWizzard/StepThree";
 import Summary from "./components/MainPage/ProjectCreationWizzard/Summary";
 import Finalize from "./components/MainPage/ProjectCreationWizzard/Finalize";
+import ProjectPage from "./pages/project/projectPage";
+import Projects from "./pages/project/projects";
 
 export default function App() {
   return (
@@ -45,6 +47,8 @@ export default function App() {
             </Route>
             <Route index element={<DashboardMainPage />} />
             <Route path="tasks" element={<TasksPage />} />
+            <Route path="project/:serializedId" element={<ProjectPage />} />
+            <Route path="/dashboard/projects" element={<Projects />} />
           </Route>
         </Routes>
       </BrowserRouter>

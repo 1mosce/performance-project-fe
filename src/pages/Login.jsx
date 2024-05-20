@@ -5,18 +5,26 @@ import { Button, CircularProgress, TextField, Snackbar } from "@mui/material";
 import { useState } from "react";
 import Backdrop from "@mui/material/Backdrop";
 import {
+  API_COMPANYID_TESTING,
+  API_PATH_GET_COMPANY_BY_ID,
   API_PATH_LOGIN,
   API_ROUTE_DEV,
   LOGIN_SUCCESS,
 } from "../constants/constants";
-import { signInRequest } from "../functions/apiFunctions";
+import {
+  performGetRequestToApi,
+  performPostRequestToApi,
+} from "../functions/apiFunctions";
 import {
   classifyResponseMessageOnLogin,
   classifyResponseTypeOnLogin,
+  loadCompanyProjectsFromAPI,
+  loadCompanyTasksFromAPI,
   simulateDelay,
 } from "../functions/functions";
 import { hybernateUserInformation } from "../store/features/signInFeatures/signInSlice";
 import { useNavigate } from "react-router-dom";
+import { fullFillCompanyData } from "../store/features/companyFeatures/companySlice";
 
 const LoginPage = () => {
   const dispatch = useDispatch();
@@ -40,7 +48,7 @@ const LoginPage = () => {
       password: e.target.password.value,
     };
 
-    let response = await signInRequest(connectionString, payload);
+    let response = await performPostRequestToApi(connectionString, payload);
 
     if (!response.data.success) {
       let scenario = classifyResponseTypeOnLogin(response);
@@ -52,44 +60,20 @@ const LoginPage = () => {
     } else {
       localStorage.setItem("token", response.data.accessToken);
       dispatch(hybernateUserInformation(response.data));
+      connectionString =
+        API_ROUTE_DEV + API_PATH_GET_COMPANY_BY_ID + API_COMPANYID_TESTING;
+      let company_response = await performGetRequestToApi(connectionString);
+      if (company_response.status === 200) {
+        localStorage.setItem("company_data", company_response.data[0]);
+        dispatch(fullFillCompanyData(company_response.data));
+        await loadCompanyProjectsFromAPI();
+        await loadCompanyTasksFromAPI();
+      }
       setErrorMessage(LOGIN_SUCCESS);
       await simulateDelay(500);
       dispatch(setSpinnerLoading(false));
-      navigate("/");
+      navigate("/dashboard");
     }
-
-    // let data = {
-    //   userActionPerformed: "login",
-    //   email: e.target.email.value,
-    //   password: e.target.password.value,
-    // };
-
-    // let response = userLoginLogic(data);
-
-    // if (response === ERR_EMAIL_NOT_EXISTS_ON_LOGIN) {
-    //   setErrorMessage(response);
-    //   setFieldErrorNumber(1);
-    //   await delay(500);
-    //   dispatch(setSpinnerLoading(false));
-    //   return;
-    // } else if (response === ERR_PASSWORD_DOES_NOT_MATCH_ON_LOGIN) {
-    //   setErrorMessage(response);
-    //   setFieldErrorNumber(2);
-    //   await delay(500);
-    //   dispatch(setSpinnerLoading(false));
-    //   return;
-    // } else {
-    //   response = {
-    //     ...response,
-    //     userActionPerformed: "login",
-    //   };
-    //   dispatch(setUserData(response));
-    //   await delay(1500);
-    //   dispatch(setSpinnerLoading(false));
-    //   navigate("/");
-    // }
-
-    // await delay(500);
   }
 
   return (

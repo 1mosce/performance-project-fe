@@ -62,33 +62,3 @@ export const dev_companyLastUpdatedTasks = [
     task_assigned_person_role: "QA",
   },
 ];
-
-export const dev_companyProjectsList = [
-  // {
-  //   id: "1",
-  //   project_name: "ProjectName",
-  //   project_status: "active",
-  //   project_start_date: "24/02/2022",
-  //   project_end_date: "Indefinite",
-  //   project_assigned_employees: "52",
-  //   project_updates_since_last_visit: "99+",
-  // },
-  // {
-  //   id: "2",
-  //   project_name: "ProjectName",
-  //   project_status: "active",
-  //   project_start_date: "24/02/2022",
-  //   project_end_date: "Indefinite",
-  //   project_assigned_employees: "52",
-  //   project_updates_since_last_visit: "99+",
-  // },
-  // {
-  //   id: "3",
-  //   project_name: "ProjectName",
-  //   project_status: "active",
-  //   project_start_date: "24/02/2022",
-  //   project_end_date: "Indefinite",
-  //   project_assigned_employees: "52",
-  //   project_updates_since_last_visit: "99+",
-  // },
-];

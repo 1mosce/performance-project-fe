@@ -1,22 +1,27 @@
 import "../../styles/pages/dashboard/mainPage/index.scss";
-import { CircularProgress, Container, Button } from "@mui/material";
+import { CircularProgress, Container, Button, Box } from "@mui/material";
 import MainPageProjectsContainer from "../../components/MainPage/MainPageProjectsContainer";
 import { useEffect, useState } from "react";
 import { simulateDelay } from "../../functions/functions";
 import { dev_companyLastUpdatedTasks } from "../../constants/database";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import MainPageTasksContainer from "../../components/MainPage/MainPageTasksContainer";
 import MainPageProjectCreationWizzard from "../../components/MainPage/MainPageProjectCreationWizzard";
 import { useDispatch, useSelector } from "react-redux";
+import AddProjectBlock from "../../components/ProjectsPage/AddProjectBlock";
 
 function DashboardMainPage() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [companyProjectsList, setCompanyProjectsList] = useState([]);
+  const [companyTasksList, setCompanyTasksList] = useState([]);
 
   const companyProjectsList_toSet = useSelector(
     (state) => state.company.projectsList
   );
+  const tasksList = useSelector((state) => state.company.tasksList);
+
+  const companyTasksListSet = (value) => setCompanyTasksList(value);
 
   useEffect(() => {
     async function fetchDataAndNavigate() {
@@ -30,6 +35,11 @@ function DashboardMainPage() {
     }
     fetchDataAndNavigate();
   }, [companyProjectsList_toSet, navigate]);
+
+  useEffect(() => {
+    companyTasksListSet(tasksList);
+  }, [tasksList]);
+
   return (
     <Container maxWidth="lg">
       <>
@@ -43,9 +53,19 @@ function DashboardMainPage() {
           {isLoading ? (
             <CircularProgress />
           ) : (
-            companyProjectsList?.map((item) => (
-              <MainPageProjectsContainer project={item} />
-            ))
+            <Box className="projectsGrid">
+              {companyProjectsList?.map((item) => (
+                <Link
+                  style={{ textDecoration: "none", color: "inherit" }}
+                  to={`/dashboard/project/${item.serializedId}`}
+                  key={item.serializedId}
+                  className="projectLink"
+                >
+                  <MainPageProjectsContainer project={item} />
+                </Link>
+              ))}
+              <AddProjectBlock />
+            </Box>
           )}
         </div>
         <h3 className="dashboardMainPage_welcomeText_span">
@@ -55,7 +75,7 @@ function DashboardMainPage() {
           {isLoading ? (
             <CircularProgress />
           ) : (
-            dev_companyLastUpdatedTasks.map((item) => (
+            companyTasksList.map((item) => (
               <MainPageTasksContainer task={item} />
             ))
           )}

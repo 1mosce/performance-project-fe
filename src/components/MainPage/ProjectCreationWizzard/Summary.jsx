@@ -112,12 +112,18 @@ function Summary() {
         <div className="summary-container_additional-section"></div>
       </div>
       <div className="ButtonsContainer">
-        <Link to="/dashboard/project-creation-wizzard">
+        <Link
+          style={{ textDecoration: "none" }}
+          to="/dashboard/project-creation-wizzard"
+        >
           <Button variant="text" className="ButtonsContainer_goBack">
             Go back
           </Button>
         </Link>
-        <Link to="/dashboard/project-creation-wizzard/finalize">
+        <Link
+          style={{ textDecoration: "none" }}
+          to="/dashboard/project-creation-wizzard/finalize"
+        >
           <Button variant="contained" className="ButtonsContainer_nextStep">
             Finalize
           </Button>

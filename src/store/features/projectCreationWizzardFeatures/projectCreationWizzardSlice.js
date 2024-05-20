@@ -6,7 +6,7 @@ export const projectCreationWizzardSlice = createSlice({
     project_name: "project name",
     project_description: "project description",
     project_start_date: "10/05/2024",
-    project_end_date: "12/05/2024",
+    project_end_date: "12/05/2025",
     indefiniteChecked: false,
     project_mainMethodology: "Kanban",
     project_employeeCount: "10+",

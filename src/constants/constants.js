@@ -51,8 +51,16 @@ export const LOGIN_SUCCESS = "Login Success!";
 export const API_ROUTE_DEV = "http://localhost:5181";
 
 //API PATH
-export const API_PATH_REGISTER = "/register";
+export const API_PATH_REGISTER = "/api/register";
 
-export const API_PATH_LOGIN = "/login";
+export const API_PATH_LOGIN = "/api/login";
+
+export const API_PATH_PROJECTS = "/api/projects";
+
+export const API_PATH_TASKS = "/api/tasks";
+
+export const API_PATH_GET_COMPANY_BY_ID = "/api/Companies/";
 
 export const API_PATH_GET_PROJECTS_LIST = "";
+
+export const API_COMPANYID_TESTING = "65e393721c16253e2068c04e";

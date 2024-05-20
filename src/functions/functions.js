@@ -14,8 +14,19 @@ import {
   ROLE_SFTWR,
   ROLE_LEAD,
   ROLE_QA,
+  API_ROUTE_DEV,
+  API_COMPANYID_TESTING,
+  API_PATH_GET_COMPANY_BY_ID,
+  API_PATH_TASKS,
 } from "../constants/constants";
 import { temp_userList } from "../constants/database";
+import { performGetRequestToApi } from "./apiFunctions";
+import companySlice, {
+  fullFillCompanyData,
+  setCompanyProjectsList,
+  setCompanyTasksList,
+} from "../store/features/companyFeatures/companySlice";
+import store from "../store/store";
 
 const dataset = temp_userList;
 
@@ -120,5 +131,54 @@ export function definePersonRoleContainerColor(role) {
       return "qa";
     default:
       return "";
+  }
+}
+
+export async function loadCompanyProjectsFromAPI() {
+  const connectionString =
+    API_ROUTE_DEV +
+    API_PATH_GET_COMPANY_BY_ID +
+    API_COMPANYID_TESTING +
+    "/projects";
+
+  const result = await performGetRequestToApi(connectionString);
+
+  if (result.data) {
+    result.data.forEach((item) => {
+      console.log(item);
+      store.dispatch(setCompanyProjectsList(item));
+    });
+  }
+}
+
+export async function getProjectTasksFromAPI(id) {
+  const connectionString = API_ROUTE_DEV + API_PATH_TASKS;
+
+  const result = await performGetRequestToApi(connectionString);
+
+  if (result.data) {
+    const filteredTasks = result.data.filter((item) => item.projectId === id);
+    store.dispatch(setCompanyTasksList(filteredTasks));
+  }
+}
+
+export async function loadCompanyTasksFromAPI() {
+  const connectionString = API_ROUTE_DEV + API_PATH_TASKS;
+
+  const result = await performGetRequestToApi(connectionString);
+  if (result.data) {
+    store.dispatch(setCompanyTasksList(result.data));
+  }
+}
+
+export async function handleAppReload() {
+  const connectionString =
+    API_ROUTE_DEV + API_PATH_GET_COMPANY_BY_ID + API_COMPANYID_TESTING;
+  let company_response = await performGetRequestToApi(connectionString);
+  if (company_response.status === 200) {
+    localStorage.setItem("company_data", company_response.data[0]);
+    store.dispatch(fullFillCompanyData(company_response.data));
+    await loadCompanyProjectsFromAPI();
+    await loadCompanyTasksFromAPI();
   }
 }
