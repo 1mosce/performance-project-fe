@@ -18,12 +18,11 @@ import {
   addNewTaskToProject,
   getCompanyEmployeesFromAPI,
   getCompanyProjectsFromAPI,
-  performPutRequestToApi, // Add this function to perform PUT request
 } from "../../functions/apiFunctions";
 import RenderProjectName from "./RenderProjectName";
 import { useDispatch, useSelector } from "react-redux";
 import { addTask } from "../../store/features/companyFeatures/companySlice";
-import { v4 as uuid } from "uuid";
+
 const modalStyle = {
   position: "absolute",
   top: "50%",
@@ -37,7 +36,13 @@ const modalStyle = {
   borderRadius: "10px",
 };
 
-function AddTaskOnProjectModal({ open, onClose, projectId }) {
+function AddTaskOnProjectModal({
+  open,
+  onClose,
+  projectId,
+  startDate,
+  dueDate,
+}) {
   const [assignee, setAssignee] = useState("");
   const [relatedProject, setRelatedProject] = useState(projectId || "");
   const [availableEmployees, setAvailableEmployees] = useState([]);
@@ -47,7 +52,6 @@ function AddTaskOnProjectModal({ open, onClose, projectId }) {
   const [taskDueDate, setTaskDueDate] = useState("");
   const [taskStatus, setTaskStatus] = useState("");
 
-  //TEMPORARY LOGIC API + LOCAL PROJECT
   const { projectsList } = useSelector((state) => state.company);
 
   const handleAvailableEmployeesSet = (value) => setAvailableEmployees(value);
@@ -80,7 +84,6 @@ function AddTaskOnProjectModal({ open, onClose, projectId }) {
   };
 
   const handleRelatedProjectChange = (event) => {
-    alert(event.target.value);
     setRelatedProject(event.target.value);
   };
 
@@ -118,7 +121,6 @@ function AddTaskOnProjectModal({ open, onClose, projectId }) {
       dueDate: convertToISODateString(taskDueDate),
     };
 
-    console.log(updatedTask.dueDate); // Check the converted due date
     try {
       const result = await addNewTaskToProject(updatedTask);
       dispatch(addTask(result));
@@ -138,6 +140,7 @@ function AddTaskOnProjectModal({ open, onClose, projectId }) {
           </IconButton>
         </Box>
         <Divider sx={{ my: 2 }} />
+
         <TextField
           fullWidth
           label="Task Title"
@@ -185,8 +188,20 @@ function AddTaskOnProjectModal({ open, onClose, projectId }) {
               type="date"
               fullWidth
               value={taskDueDate}
+              InputProps={{
+                inputProps: {
+                  min: startDate,
+                  max: dueDate,
+                },
+              }}
               onChange={handleDueDateChange}
               InputLabelProps={{ shrink: true }}
+              sx={{
+                pointerEvents: "none", // Disable manual input
+                "& .MuiInputBase-input": {
+                  pointerEvents: "auto", // Enable click for the date picker
+                },
+              }}
             />
           </Box>
         </Box>

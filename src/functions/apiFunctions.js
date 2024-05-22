@@ -32,6 +32,12 @@ export async function performPutRequestToApi(connectionString, payload) {
   });
 }
 
+export async function performDeleteRequestToApi(connectionString) {
+  return await axios.delete(connectionString).catch((error) => {
+    return error.response.data;
+  });
+}
+
 export async function getCompanyEmployeesFromAPI() {
   const connectionString =
     API_ROUTE_DEV +
@@ -66,4 +72,41 @@ export async function addNewTaskToProject(payload) {
 
   const result = await performPostRequestToApi(connectionString, payload);
   return result.data;
+}
+
+export async function editProjectInfo(projectId, payload) {
+  const connectionString = API_ROUTE_DEV + API_PATH_PROJECTS + "/" + projectId;
+
+  const result = await performPutRequestToApi(connectionString, payload);
+
+  return result.status;
+}
+
+export async function deleteProject(projectId) {
+  try {
+    // Get all tasks
+    const tasksResponse = await performGetRequestToApi(
+      API_ROUTE_DEV + API_PATH_TASKS
+    );
+    const tasks = tasksResponse.data;
+
+    // Filter tasks that belong to the given projectId
+    const tasksToDelete = tasks.filter((task) => task.projectId === projectId);
+
+    // Delete each task
+    for (const task of tasksToDelete) {
+      await performDeleteRequestToApi(
+        `${API_ROUTE_DEV + API_PATH_TASKS}/${task.serializedId}`
+      );
+    }
+
+    // Delete the project
+    await performDeleteRequestToApi(
+      `${API_ROUTE_DEV + API_PATH_PROJECTS}/${projectId}`
+    );
+
+    return 204;
+  } catch (error) {
+    console.error("Error deleting project and its tasks:", error);
+  }
 }

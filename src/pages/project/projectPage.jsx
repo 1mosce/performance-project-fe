@@ -1,44 +1,42 @@
-import {
-  Button,
-  Container,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  IconButton,
-  Stack,
-  TextField,
-} from "@mui/material";
+import { Button, Container, IconButton, Divider } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
 import EditIcon from "@mui/icons-material/Edit";
-import Divider from "@mui/material/Divider";
-import "../../styles/pages/dashboard/project/index.scss";
-import { DataGrid } from "@mui/x-data-grid";
-import { getProjectTasksFromAPI } from "../../functions/functions";
-import { ERR_PROJECT_NAME_INVALID } from "../../constants/constants";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
+import { DataGrid } from "@mui/x-data-grid";
+import "../../styles/pages/dashboard/project/index.scss";
+import { deleteProject, editProjectInfo } from "../../functions/apiFunctions";
+import {
+  deleteProjectFromStore,
+  editProject,
+} from "../../store/features/companyFeatures/companySlice";
 import EditTaskOnProjectModal from "../../components/ProjectsPage/EditTaskOnProjectModal";
 import AddTaskOnProjectModal from "../../components/ProjectsPage/AddTaskOnProjectModal";
 import RenderProjectName from "../../components/ProjectsPage/RenderProjectName";
 import RenderAssignedPerson from "../../components/ProjectsPage/RenderAssignedPerson";
+import EditProjectNameDialog from "../../components/ProjectsPage/EditProjectNameDialog";
+import EditProjectDescriptionDialog from "../../components/ProjectsPage/EditProjectDescriptionDialog";
+import EditProjectDatesDialog from "../../components/ProjectsPage/EditProjectDatesDialog";
+import { CalendarIcon } from "@mui/x-date-pickers";
+import DeleteProjectDialog from "../../components/ProjectsPage/DeleteProjectDialog";
 
 function ProjectPage() {
   const { serializedId } = useParams();
   const [mainProject, setMainProject] = useState();
-  const [projectTasks, setProjectTasks] = useState();
+  const [projectTasks, setProjectTasks] = useState([]);
   const [activeButton, setActiveButton] = useState(1);
   const [editTitleActive, setEditTitleActive] = useState(false);
-  const [newProjectName, setNewProjectName] = useState();
-  const [newProjectNameError, setNewProjectNameError] = useState("");
-  const [selectedTask, setSelectedTask] = useState();
+  const [editDescriptionActive, setEditDescriptionActive] = useState(false);
+  const [editDatesActive, setEditDatesActive] = useState(false);
+  const [selectedTask, setSelectedTask] = useState(null);
   const [editTaskActive, setEditTaskActive] = useState(false);
-  const [addTaskActive, setAddTaskActive] = useState(false); // State for add task modal
+  const [addTaskActive, setAddTaskActive] = useState(false);
+  const [deleteDialogActive, setDeleteDialogActive] = useState(false);
 
-  const handleButtonClick = (button) => () => setActiveButton(button);
-
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const projectList = useSelector((state) => state.company.projectsList);
   const taskList = useSelector((state) => state.company.tasksList);
 
@@ -60,19 +58,25 @@ function ProjectPage() {
     }
   }, [taskList, serializedId]);
 
-  const handleNewProjectInput = (input) =>
-    setNewProjectName(input.target.value);
+  const handleButtonClick = (button) => () => setActiveButton(button);
 
   const handleRowSelection = (item) => setSelectedTask(item.row);
 
-  function handleSaveNewProjectName() {
-    if (!newProjectName || newProjectName === "") {
-      setNewProjectNameError(ERR_PROJECT_NAME_INVALID);
-      return;
+  const handleSave = async (serializedId, payload) => {
+    const result = await editProjectInfo(serializedId, payload);
+    if (result === 204) {
+      dispatch(editProject({ ...payload, serializedId }));
     }
+    return result;
+  };
 
-    setEditTitleActive(false);
-  }
+  const handleDeleteProject = async () => {
+    const result = await deleteProject(mainProject.serializedId);
+    if (result === 204) {
+      dispatch(deleteProjectFromStore(mainProject.serializedId));
+      navigate("/dashboard"); // Redirect to the projects list page
+    }
+  };
 
   const renderContent = () => {
     switch (activeButton) {
@@ -133,7 +137,7 @@ function ProjectPage() {
               )}
               <div
                 className="projectRenderDataOption-button"
-                onClick={() => setAddTaskActive(true)} // Set add task modal to active
+                onClick={() => setAddTaskActive(true)}
               >
                 Create Task
                 <AddIcon />
@@ -142,9 +146,29 @@ function ProjectPage() {
           </div>
         );
       case 2:
-        return <h1>Im second</h1>;
+        return <h1>Employees Content</h1>;
       case 3:
-        return <h1>Im thirds</h1>;
+        return (
+          <div className="settings">
+            <div className="settingsContainer">
+              <Button onClick={() => setEditTitleActive(true)}>
+                Edit project title <EditIcon />
+              </Button>
+              <Button onClick={() => setEditDescriptionActive(true)}>
+                Edit project description <EditIcon />
+              </Button>
+              <Button onClick={() => setEditDatesActive(true)}>
+                Edit project dates <CalendarIcon />{" "}
+              </Button>
+              <Button
+                className="deleteButton"
+                onClick={() => setDeleteDialogActive(true)}
+              >
+                Delete project <DeleteIcon />
+              </Button>
+            </div>
+          </div>
+        );
     }
   };
 
@@ -161,43 +185,52 @@ function ProjectPage() {
             <AddTaskOnProjectModal
               open={addTaskActive}
               onClose={() => setAddTaskActive(false)}
-              projectId={serializedId} // Pass current project ID to the add task modal
+              projectId={serializedId}
+              dueDate={mainProject.endDate}
+              startDate={mainProject.startDate}
             />
-            <Dialog
+            <EditProjectNameDialog
               open={editTitleActive}
               onClose={() => setEditTitleActive(false)}
-            >
-              <DialogTitle>Edit project name</DialogTitle>
-              <DialogContent>
-                <TextField
-                  inputProps={{ maxLength: 50 }}
-                  error={
-                    newProjectNameError !== "" ? newProjectNameError : false
-                  }
-                  helperText={newProjectNameError}
-                  variant="standard"
-                  onChange={(e) => handleNewProjectInput(e)}
-                ></TextField>
-              </DialogContent>
-              <DialogActions>
-                <Button onClick={() => setEditTitleActive(false)}>
-                  Cancel
-                </Button>
-                <Button
-                  onClick={() => {
-                    handleSaveNewProjectName();
-                  }}
-                  type="primary"
-                >
-                  Save
-                </Button>
-              </DialogActions>
-            </Dialog>
+              mainProject={mainProject}
+              onSave={handleSave}
+            />
+            <EditProjectDescriptionDialog
+              open={editDescriptionActive}
+              onClose={() => setEditDescriptionActive(false)}
+              mainProject={mainProject}
+              onSave={handleSave}
+            />
+            <EditProjectDatesDialog
+              open={editDatesActive}
+              onClose={() => setEditDatesActive(false)}
+              mainProject={mainProject}
+              onSave={handleSave}
+            />
+            <DeleteProjectDialog
+              open={deleteDialogActive}
+              onClose={() => setDeleteDialogActive(false)}
+              onDelete={handleDeleteProject}
+            />
             <div className="projectInfoContainer">
               <h1>{mainProject.name || mainProject?.project_name}</h1>
               <IconButton onClick={() => setEditTitleActive(true)}>
                 <EditIcon />
               </IconButton>
+            </div>
+            <div className="projectInfoContainer-section">
+              <div className="projectInfoContainer-section_button">
+                {mainProject.description.length > 50
+                  ? "Open description"
+                  : mainProject.description}
+              </div>
+              <div className="projectInfoContainer-section_button">
+                <CalendarIcon />
+                {mainProject.startDate} -{" "}
+                {mainProject.endDate !== "0001-01-01"
+                  ? mainProject.endDate
+                  : "Indefinite"}
+              </div>
             </div>
             <Divider />
             <div className="projectDataContainer">
@@ -235,4 +268,5 @@ function ProjectPage() {
     </>
   );
 }
+
 export default ProjectPage;
