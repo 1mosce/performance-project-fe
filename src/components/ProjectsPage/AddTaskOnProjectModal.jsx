@@ -15,6 +15,7 @@ import "../../styles/pages/dashboard/project/index.scss"; // Ensure this path is
 import RenderAssignedPerson from "./RenderAssignedPerson";
 import RenderProjectNameWithoutApi from "./RenderProjectNameWithoutApi";
 import {
+  addNewTaskToProject,
   getCompanyEmployeesFromAPI,
   getCompanyProjectsFromAPI,
   performPutRequestToApi, // Add this function to perform PUT request
@@ -100,29 +101,27 @@ function AddTaskOnProjectModal({ open, onClose, projectId }) {
   };
 
   const handleSubmit = async () => {
+    const convertToISODateString = (dateString) => {
+      const date = new Date(dateString);
+      date.setUTCHours(12, 0, 0, 0);
+      return date.toISOString();
+    };
+
     const updatedTask = {
-      id: {
-        timestamp: new Date().getTime(),
-        machine: Math.floor(Math.random() * 16777216),
-        pid: Math.floor(Math.random() * 32767),
-        increment: Math.floor(Math.random() * 16777216),
-        creationTime: new Date().toISOString(),
-      },
-      serializedId: uuid(),
+      id: {},
       title: taskTitle,
       description: taskDescription,
       assigneeId: assignee,
       projectId: relatedProject,
-      statusId: taskStatus,
-      priorityId: "",
-      dueDate: taskDueDate,
-      timeSpent: "00:00:00",
-      rating: "4",
+      statusId: null,
+      priorityId: null,
+      dueDate: convertToISODateString(taskDueDate),
     };
 
+    console.log(updatedTask.dueDate); // Check the converted due date
     try {
-      // await performPutRequestToApi(`/api/Tasks/${task.id}`, updatedTask);
-      dispatch(addTask(updatedTask));
+      const result = await addNewTaskToProject(updatedTask);
+      dispatch(addTask(result));
       onClose();
     } catch (error) {
       console.error("Failed to update task", error);
