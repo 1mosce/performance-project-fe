@@ -2,6 +2,7 @@ import axios from "axios";
 import {
   API_COMPANYID_TESTING,
   API_PATH_GET_COMPANY_BY_ID,
+  API_PATH_PROJECTS,
   API_ROUTE_DEV,
 } from "../constants/constants";
 
@@ -49,5 +50,12 @@ export async function getCompanyProjectsFromAPI() {
     "/projects";
 
   const result = await performGetRequestToApi(connectionString);
+  return result.data;
+}
+
+export async function addNewCompanyProject(payload) {
+  const connectionString = API_ROUTE_DEV + API_PATH_PROJECTS;
+
+  const result = await performPostRequestToApi(connectionString, payload);
   return result.data;
 }

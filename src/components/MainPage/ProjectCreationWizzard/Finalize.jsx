@@ -5,6 +5,7 @@ import { simulateDelay } from "../../../functions/functions";
 import { useNavigate } from "react-router-dom";
 import { setCompanyProjectsList } from "../../../store/features/companyFeatures/companySlice";
 import { v4 as uuid } from "uuid";
+import { addNewCompanyProject } from "../../../functions/apiFunctions";
 
 function Finalize() {
   const [spinnerLoading, setSpinnerLoading] = useState(false);
@@ -14,36 +15,37 @@ function Finalize() {
 
   const preFetchedData = useSelector((state) => state.projectCreationWizzard);
 
-  useEffect(() => {
-    setSpinnerLoading(true);
+  function convertDateToYMD(dateString) {
+    if (!dateString) return "0000-00-00"; // Return default if dateString is empty or null
+    const [day, month, year] = dateString.split("/");
+    return `${year}-${month}-${day}`;
+  }
 
-    const payload = {
-      id: {
-        timestamp: new Date().getTime(),
-        machine: Math.floor(Math.random() * 16777216),
-        pid: Math.floor(Math.random() * 32767),
-        increment: Math.floor(Math.random() * 16777216),
-        creationTime: new Date().toISOString(),
-      },
-      serializedId: uuid(),
-      name: preFetchedData.project_name,
-      description: preFetchedData.project_description,
-      statusId: "active",
-      companyId: "65e393721c16253e2068c04e",
-      teamId: "661d4d85be4848c99799fc62",
-      // project_start_date: preFetchedData.project_start_date,
-      // project_end_date:
-      //   preFetchedData.project_end_date !== ""
-      //     ? preFetchedData.project_end_date
-      //     : "Indefinite",
-      // project_assigned_employees: "0",
-      // project_updates_since_last_visit: "0",
-    };
-    dispatch(setCompanyProjectsList(payload));
-    simulateDelay(5000).then(() => {
-      setSpinnerLoading(false);
-      navigate("/dashboard");
-    });
+  useEffect(() => {
+    async function processData() {
+      setSpinnerLoading(true);
+
+      const payload = {
+        id: {},
+        name: preFetchedData.project_name,
+        description: preFetchedData.project_description,
+        startDate: convertDateToYMD(preFetchedData.project_start_date),
+        endDate: convertDateToYMD(preFetchedData.project_end_date),
+        mainMethodology: preFetchedData.project_mainMethodology,
+        companyId: "65e393721c16253e2068c04e",
+        statusId: null,
+        teamId: "661d4d85be4848c99799fc62",
+        // project_assigned_employees: "0",
+        // project_updates_since_last_visit: "0",
+      };
+      const result = await addNewCompanyProject(payload);
+      dispatch(setCompanyProjectsList(result));
+      simulateDelay(5000).then(() => {
+        setSpinnerLoading(false);
+        navigate("/dashboard");
+      });
+    }
+    processData();
   }, []); // Removed the dependency array
 
   useEffect(() => {

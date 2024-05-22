@@ -148,14 +148,14 @@ function DashboardLayout() {
       ) : (
         <List>
           {companyProjectsList?.map((content) => (
-            <ListItem key={content.serializedId}>
+            <ListItem key={content?.serializedId}>
               <ListItemButton>
                 <ListItemIcon>
                   <LayersIcon />
                 </ListItemIcon>
                 <Link
                   style={{ textDecoration: "none" }}
-                  to={`/dashboard/project/${content.serializedId}`}
+                  to={`/dashboard/project/${content?.serializedId}`}
                 >
                   <ListItemText
                     primary={content.name || content.project_name}
