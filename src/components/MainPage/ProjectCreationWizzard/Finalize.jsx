@@ -16,7 +16,7 @@ function Finalize() {
   const preFetchedData = useSelector((state) => state.projectCreationWizzard);
 
   function convertDateToYMD(dateString) {
-    if (!dateString) return "0000-00-00"; // Return default if dateString is empty or null
+    if (!dateString) return "0001-01-01"; // Return default if dateString is empty or null
     const [day, month, year] = dateString.split("/");
     return `${year}-${month}-${day}`;
   }
