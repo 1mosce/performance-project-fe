@@ -3,6 +3,7 @@ import {
   API_COMPANYID_TESTING,
   API_PATH_GET_COMPANY_BY_ID,
   API_PATH_PROJECTS,
+  API_PATH_TASKS,
   API_ROUTE_DEV,
 } from "../constants/constants";
 
@@ -55,6 +56,13 @@ export async function getCompanyProjectsFromAPI() {
 
 export async function addNewCompanyProject(payload) {
   const connectionString = API_ROUTE_DEV + API_PATH_PROJECTS;
+
+  const result = await performPostRequestToApi(connectionString, payload);
+  return result.data;
+}
+
+export async function addNewTaskToProject(payload) {
+  const connectionString = API_ROUTE_DEV + API_PATH_TASKS;
 
   const result = await performPostRequestToApi(connectionString, payload);
   return result.data;
