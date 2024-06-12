@@ -20,9 +20,13 @@ import {
   API_PATH_TASKS,
 } from "../constants/constants";
 import { temp_userList } from "../constants/database";
-import { performGetRequestToApi } from "./apiFunctions";
+import {
+  getCompanyEmployeesFromAPI,
+  performGetRequestToApi,
+} from "./apiFunctions";
 import companySlice, {
   fullFillCompanyData,
+  setCompanyEmployees,
   setCompanyProjectsList,
   setCompanyTasksList,
 } from "../store/features/companyFeatures/companySlice";
@@ -113,7 +117,7 @@ export function defineStatusContainerColor(status) {
     case TASK_COMPLETED_MESSAGE:
       return "completed";
     case TASK_IN_PROGRESS_MESSAGE:
-      return "inProgress";
+      return "in_progress";
     case TASK_DELETED_MESSAGE:
       return "deleted";
     default:
@@ -167,7 +171,32 @@ export async function loadCompanyTasksFromAPI() {
 
   const result = await performGetRequestToApi(connectionString);
   if (result.data) {
-    store.dispatch(setCompanyTasksList(result.data));
+    const currentDate = new Date();
+    const updatedData = result.data.map((task) => {
+      const dueDate = new Date(task.dueDate);
+      let statusId = task.statusId;
+
+      if (dueDate < currentDate) {
+        statusId = "in_progress";
+      } else {
+        statusId = Math.random() > 0.1 ? "completed" : "in_progress";
+      }
+
+      return {
+        ...task,
+        statusId,
+      };
+    });
+
+    store.dispatch(setCompanyTasksList(updatedData));
+  }
+}
+
+export async function loadCompanyUsersFromAPI() {
+  const result = await getCompanyEmployeesFromAPI();
+
+  if (result) {
+    store.dispatch(setCompanyEmployees(result));
   }
 }
 

@@ -7,6 +7,7 @@ export const companySlice = createSlice({
     projectsList: [],
     companyName: "",
     tasksList: [],
+    employees: [],
   },
   reducers: {
     setCompanyProjectsList: (state, action) => {
@@ -14,6 +15,9 @@ export const companySlice = createSlice({
     },
     setCompanyTasksList: (state, action) => {
       state.tasksList = action.payload;
+    },
+    setCompanyEmployees: (state, action) => {
+      state.employees = action.payload;
     },
     addTask: (state, action) => {
       state.tasksList.push(action.payload);
@@ -57,6 +61,7 @@ export const {
   setCompanyProjectsList,
   fullFillCompanyData,
   setCompanyTasksList,
+  setCompanyEmployees,
   addTask,
   editTask,
   editProject,

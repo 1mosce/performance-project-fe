@@ -20,13 +20,13 @@ function DashboardMainPage() {
     (state) => state.company.projectsList
   );
   const tasksList = useSelector((state) => state.company.tasksList);
-
+  const companyData = useSelector((state) => state.company.companyData);
   const companyTasksListSet = (value) => setCompanyTasksList(value);
 
   useEffect(() => {
     async function fetchDataAndNavigate() {
       setIsLoading(true);
-      await simulateDelay(3000);
+      // await simulateDelay(1000);
       setCompanyProjectsList(companyProjectsList_toSet);
       setIsLoading(false);
       if (companyProjectsList_toSet.length === 0) {
@@ -37,6 +37,12 @@ function DashboardMainPage() {
   }, [companyProjectsList_toSet, navigate]);
 
   useEffect(() => {
+    if (companyData) {
+      console.log(companyData);
+    }
+  }, [companyData]);
+
+  useEffect(() => {
     companyTasksListSet(tasksList);
   }, [tasksList]);
 
@@ -44,9 +50,9 @@ function DashboardMainPage() {
     <Container maxWidth="lg">
       <>
         <div className="dashboardMainPage_welcomeText">
-          <h2 className="dashboardMainPage_welcomeText_title">Welcome back</h2>
+          <h2 className="dashboardMainPage_welcomeText_title">Welcome back!</h2>
           <h3 className="dashboardMainPage_welcomeText_span">
-            On-going projects in Company Name
+            On-going projects in {companyData?.name}
           </h3>
         </div>
         <div className="dashboardMainPage_companyItemsShowcase">

@@ -4,10 +4,10 @@ import {
 } from "../../functions/functions";
 import "../../styles/components/MainPageAdditionalRender.scss";
 
-function TaskStatusContainer({ status }) {
+function TaskStatusContainer({ statusId }) {
   return (
-    <div className={"taskStatus" + " " + defineStatusContainerColor(status)}>
-      <p>{status}</p>
+    <div className={"taskStatus" + " " + defineStatusContainerColor(statusId)}>
+      <p>{statusId}</p>
     </div>
   );
 }

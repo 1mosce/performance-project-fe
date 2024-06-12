@@ -21,6 +21,7 @@ import EditProjectDescriptionDialog from "../../components/ProjectsPage/EditProj
 import EditProjectDatesDialog from "../../components/ProjectsPage/EditProjectDatesDialog";
 import { CalendarIcon } from "@mui/x-date-pickers";
 import DeleteProjectDialog from "../../components/ProjectsPage/DeleteProjectDialog";
+import DeleteTaskDialog from "../../components/ProjectsPage/DeleteTaskDialog";
 
 function ProjectPage() {
   const { serializedId } = useParams();
@@ -34,6 +35,7 @@ function ProjectPage() {
   const [editTaskActive, setEditTaskActive] = useState(false);
   const [addTaskActive, setAddTaskActive] = useState(false);
   const [deleteDialogActive, setDeleteDialogActive] = useState(false);
+  const [deleteTaskDialogActive, setDeleteTaskDialogActive] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -128,7 +130,10 @@ function ProjectPage() {
                     Edit task
                     <EditIcon />
                   </div>
-                  <div className="projectRenderDataOption-button delete-button">
+                  <div
+                    className="projectRenderDataOption-button delete-button"
+                    onClick={() => setDeleteTaskDialogActive(true)}
+                  >
                     Delete <DeleteIcon />
                   </div>
                 </>
@@ -162,7 +167,7 @@ function ProjectPage() {
               </Button>
               <Button
                 className="deleteButton"
-                onClick={() => setDeleteDialogActive(true)}
+                onClick={() => setDeleteTaskDialogActive(true)}
               >
                 Delete project <DeleteIcon />
               </Button>
@@ -181,6 +186,8 @@ function ProjectPage() {
               open={editTaskActive}
               onClose={() => setEditTaskActive(false)}
               task={selectedTask}
+              projectEndDate={mainProject.endDate}
+              projectStartDate={mainProject.startDate}
             />
             <AddTaskOnProjectModal
               open={addTaskActive}
@@ -211,6 +218,10 @@ function ProjectPage() {
               open={deleteDialogActive}
               onClose={() => setDeleteDialogActive(false)}
               onDelete={handleDeleteProject}
+            />
+            <DeleteTaskDialog
+              open={deleteTaskDialogActive}
+              onClose={() => deleteTaskDialogActive(false)}
             />
             <div className="projectInfoContainer">
               <h1>{mainProject.name || mainProject?.project_name}</h1>

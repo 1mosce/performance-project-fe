@@ -30,7 +30,6 @@ const RenderProjectName = ({ projectId }) => {
 
   return (
     <Box
-      margin="0px auto"
       display="flex"
       alignItems="center"
       borderRadius="20px"

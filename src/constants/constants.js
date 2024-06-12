@@ -6,9 +6,9 @@ export const ROLE_QA = "QA";
 
 //TASKS -> STATUS MESSAGES
 
-export const TASK_COMPLETED_MESSAGE = "Completed";
-export const TASK_IN_PROGRESS_MESSAGE = "In progress";
-export const TASK_DELETED_MESSAGE = "Deleted";
+export const TASK_COMPLETED_MESSAGE = "completed";
+export const TASK_IN_PROGRESS_MESSAGE = "in_progress";
+export const TASK_DELETED_MESSAGE = "deleted";
 
 //PROJECT -> PROJECT CREATION WIZZARD MESSAGES
 

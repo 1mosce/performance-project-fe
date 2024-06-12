@@ -15,6 +15,7 @@ import "../../styles/pages/dashboard/project/index.scss"; // Ensure this path is
 import RenderAssignedPerson from "./RenderAssignedPerson";
 import RenderProjectNameWithoutApi from "./RenderProjectNameWithoutApi";
 import {
+  editProjectTask,
   getCompanyEmployeesFromAPI,
   getCompanyProjectsFromAPI,
   performPutRequestToApi, // Add this function to perform PUT request
@@ -36,7 +37,13 @@ const modalStyle = {
   borderRadius: "10px",
 };
 
-function EditTaskOnProjectModal({ open, onClose, task }) {
+function EditTaskOnProjectModal({
+  open,
+  onClose,
+  task,
+  projectEndDate,
+  projectStartDate,
+}) {
   const [assignee, setAssignee] = useState(task?.assigneeId || "");
   const [relatedProject, setRelatedProject] = useState(task?.projectId || "");
   const [availableEmployees, setAvailableEmployees] = useState([]);
@@ -48,7 +55,6 @@ function EditTaskOnProjectModal({ open, onClose, task }) {
   const [taskDueDate, setTaskDueDate] = useState(task?.dueDate || "");
   const [taskStatus, setTaskStatus] = useState(task?.statusId || "");
 
-  // TEMPORARY LOGIC API + LOCAL PROJECT
   const { projectsList } = useSelector((state) => state.company);
 
   const handleAvailableEmployeesSet = (value) => setAvailableEmployees(value);
@@ -82,7 +88,11 @@ function EditTaskOnProjectModal({ open, onClose, task }) {
       setRelatedProject(task.projectId || "");
       setTaskTitle(task.title || "");
       setTaskDescription(task.description || "");
-      setTaskDueDate(task.dueDate || "");
+      const dueDateObj = new Date(task.dueDate);
+      const formattedDueDate = `${dueDateObj.getFullYear()}-${String(
+        dueDateObj.getMonth() + 1
+      ).padStart(2, "0")}-${String(dueDateObj.getDate()).padStart(2, "0")}`;
+      setTaskDueDate(formattedDueDate);
       setTaskStatus(task.statusId || "");
     }
   }, [task]);
@@ -113,28 +123,25 @@ function EditTaskOnProjectModal({ open, onClose, task }) {
 
   const handleSubmit = async () => {
     const updatedTask = {
-      id: {
-        timestamp: new Date().getTime(),
-        machine: Math.floor(Math.random() * 16777216),
-        pid: Math.floor(Math.random() * 32767),
-        increment: Math.floor(Math.random() * 16777216),
-        creationTime: new Date().toISOString(),
-      },
-      serializedId: task.serializedId,
+      id: {},
+
       title: taskTitle,
       description: taskDescription,
       assigneeId: assignee,
       projectId: relatedProject,
-      statusId: taskStatus,
-      priorityId: task.priorityId,
+      statusId: null,
+      priorityId: null,
       dueDate: taskDueDate,
-      timeSpent: task.timeSpent,
-      rating: task.rating,
     };
 
     try {
-      dispatch(editTask(updatedTask));
-      onClose();
+      const result = await editProjectTask(updatedTask, task.serializedId);
+      if (result === 204) {
+        updatedTask.serializedId = task.serializedId;
+        updatedTask.statusId = taskStatus;
+        dispatch(editTask(updatedTask));
+        onClose();
+      }
     } catch (error) {
       console.error("Failed to update task", error);
     }
@@ -199,6 +206,12 @@ function EditTaskOnProjectModal({ open, onClose, task }) {
               value={taskDueDate}
               onChange={handleDueDateChange}
               InputLabelProps={{ shrink: true }}
+              InputProps={{
+                inputProps: {
+                  min: projectStartDate,
+                  max: projectEndDate,
+                },
+              }}
             />
           </Box>
         </Box>

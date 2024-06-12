@@ -5,6 +5,7 @@ import InboxIcon from "@mui/icons-material/Inbox";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import SettingsIcon from "@mui/icons-material/Settings";
+import BarChartIcon from "@mui/icons-material/BarChart";
 import "../styles/pages/dashboard/index.scss";
 import {
   Drawer,
@@ -51,6 +52,8 @@ function DashboardLayout() {
   );
 
   useEffect(() => {
+    if (!companyState) {
+    }
     setCompanyProjectsList(companyState.projectsList);
     setCompanyInfo(companyState.companyData);
   }, [companyState]);
@@ -76,6 +79,16 @@ function DashboardLayout() {
           </ListItemIcon>
           <Link style={{ textDecoration: "none" }} to="/dashboard/projects">
             <ListItemText primary="Projects" />
+          </Link>
+        </ListItemButton>
+      </ListItem>
+      <ListItem>
+        <ListItemButton>
+          <ListItemIcon>
+            <BarChartIcon />
+          </ListItemIcon>
+          <Link style={{ textDecoration: "none" }} to="/dashboard/statistics">
+            <ListItemText primary="Statistics" />
           </Link>
         </ListItemButton>
       </ListItem>
