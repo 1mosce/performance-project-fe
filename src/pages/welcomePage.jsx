@@ -3,6 +3,7 @@ import "../styles/pages/welcomePage/index.scss";
 import { useEffect } from "react";
 import { compareAccessTokens } from "../functions/apiFunctions";
 import { setUserData } from "../store/features/globalFeatures/globalSlice";
+import { Divider } from "@mui/material";
 
 const WelcomePage = () => {
   const dispatch = useDispatch();
@@ -27,6 +28,7 @@ const WelcomePage = () => {
   return (
     <div className="welcomePage_main">
       <h1>Welcome to our services!</h1>
+      <Divider />
       {user_name === "" ? (
         <h2>You are not logined! Please login!</h2>
       ) : (

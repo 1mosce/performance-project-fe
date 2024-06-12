@@ -8,6 +8,7 @@ import {
   TaskStatusContainer,
 } from "./MainPageTasksAdditionalRender";
 import RenderProjectName from "../ProjectsPage/RenderProjectName";
+import RenderAssignedPerson from "../ProjectsPage/RenderAssignedPerson";
 
 function MainPageTasksContainer({ task }) {
   return (
@@ -22,14 +23,12 @@ function MainPageTasksContainer({ task }) {
       </div>
       <div className="block_data">
         <LayersIcon />
-        <TaskStatusContainer status={task.task_status} />
+        <TaskStatusContainer statusId={task.statusId} />
       </div>
       <div className="block_data">
         <PersonIcon />
-        <span>{task.task_assigned_person}</span>
-        <TaskAssignedPersonRole
-          assigned_person_role={task.task_assigned_person_role}
-        />
+
+        <RenderAssignedPerson personId={task.assigneeId} />
       </div>
     </div>
   );

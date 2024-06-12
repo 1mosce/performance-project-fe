@@ -24,7 +24,7 @@ const Layout = () => {
   const navigate = useNavigate();
 
   const isSpinnerLoading = useSelector(
-    (state) => state.global.isSpinnerLoading
+    (state) => state.global.isSpinnerLoading,
   );
   const isUserLoggedIn = useSelector((state) => state.global.isUserLoggedIn);
   const user_name = useSelector((state) => state.global.user_name);
@@ -99,9 +99,13 @@ const Layout = () => {
             <li className="layout_main_nav_list_option">
               <Link to="/about-us">About us</Link>
             </li>
-            <li className="layout_main_nav_list_option">
-              <Link to="/dashboard">Dashboard</Link>
-            </li>
+            {isUserLoggedIn ? (
+              <li className="layout_main_nav_list_option">
+                <Link to="/dashboard">Dashboard</Link>
+              </li>
+            ) : (
+              ""
+            )}
           </ul>
         </div>
         {isUserLoggedIn ? (

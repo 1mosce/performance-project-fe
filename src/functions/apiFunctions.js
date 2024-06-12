@@ -74,6 +74,14 @@ export async function addNewTaskToProject(payload) {
   return result.data;
 }
 
+export async function editProjectTask(payload, taskId) {
+  const connectionString = API_ROUTE_DEV + API_PATH_TASKS + "/" + taskId;
+
+  const result = await performPutRequestToApi(connectionString, payload);
+
+  return result.status;
+}
+
 export async function editProjectInfo(projectId, payload) {
   const connectionString = API_ROUTE_DEV + API_PATH_PROJECTS + "/" + projectId;
 

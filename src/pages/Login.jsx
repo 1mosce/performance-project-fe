@@ -20,6 +20,7 @@ import {
   classifyResponseTypeOnLogin,
   loadCompanyProjectsFromAPI,
   loadCompanyTasksFromAPI,
+  loadCompanyUsersFromAPI,
   simulateDelay,
 } from "../functions/functions";
 import { hybernateUserInformation } from "../store/features/signInFeatures/signInSlice";
@@ -68,11 +69,12 @@ const LoginPage = () => {
         dispatch(fullFillCompanyData(company_response.data));
         await loadCompanyProjectsFromAPI();
         await loadCompanyTasksFromAPI();
+        await loadCompanyUsersFromAPI();
       }
       setErrorMessage(LOGIN_SUCCESS);
       await simulateDelay(500);
       dispatch(setSpinnerLoading(false));
-      navigate("/dashboard");
+      navigate("/");
     }
   }
 

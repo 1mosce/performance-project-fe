@@ -123,6 +123,7 @@ function AddTaskOnProjectModal({
 
     try {
       const result = await addNewTaskToProject(updatedTask);
+      result.statusId = taskStatus;
       dispatch(addTask(result));
       onClose();
     } catch (error) {
